@@ -1,48 +1,68 @@
 import { useParams } from "react-router-dom";
-import updateHelper from "../helpers/updateHelper";
 import useProduct from "../hooks/useProduct";
 import type { ProductDto } from "./PostForm";
+import { useEffect, useState } from "react";
+import axios from "axios";
+ 
 
-  
+ 
 export default function UpdateForm(){
-    const{id}=useParams();
-    const productUpdateDto:ProductDto=useProduct(Number(id));
+    const{ id}=useParams();
 
-    function idSetter(value:number):void{
-        productUpdateDto.id=value;
+    const product:ProductDto=useProduct(Number(id));
+
+
+    
+    useEffect(()=>{
+        setProductUpdateDto(product)
+    },[product])
+    const[productUpdateDto,setProductUpdateDto]=useState<ProductDto>(product);
+    
+    
+    const updateProduct=async()=>{
+        try{
+            const res=await axios.put(`https://fakestoreapi.com/products/${id}`,productUpdateDto);
+
+            if(res.status===200){
+                console.log("Product updated successfully");
+            }else{
+                console.error("Failed to update product");
+            }
+        }
+        catch(error){
+            console.error("An error occurred while updating the product",error);
+        }
+        
     }
-    function titleSetter(value:string):void{
-        productUpdateDto.title=value;
+    console.log(productUpdateDto)
+    function update(e: React.ChangeEvent<HTMLInputElement>): void {
+        const key = e.target.id as keyof ProductDto;
+        const value = e.target.value;
+
+        setProductUpdateDto(prev => ({
+            ...prev,
+            [key]: value
+        }));
     }
-    function priceSetter(value:number):void{
-        productUpdateDto.price=value;
-    }
-    function imageSetter(value:string):void{
-        productUpdateDto.image=value;
-    }
-    function descriptionSetter(value:string):void{
-        productUpdateDto.description=value;
-    }
-    function categorySetter(value:string):void{
-        productUpdateDto.category=value;
-    } 
+
+
     return(
-        <form className="update-form">
+        < >
             <h2>Update Product</h2>
             <label htmlFor="id">ID:</label>
-            <input type="number" id="id" name="id" value={productUpdateDto.id} onChange={(e)=>idSetter(Number(e.target.value))} required/>
+            <input type="number" id="id" name="id" value={productUpdateDto.id} onChange={(e)=>{update(e)}}required/>
             <label htmlFor="title">Title:</label>
-            <input type="text" id="title" name="title" value={productUpdateDto.title} onChange={(e)=>titleSetter(e.target.value)} required/>
+            <input type="text" id="title" name="title" value={productUpdateDto.title} onChange={(e)=>{update(e)}}  required/>
             <label htmlFor="price">Price:</label>
-            <input type="number" id="price" name="price" step="0.01" value={productUpdateDto.price} onChange={(e)=>priceSetter(Number(e.target.value))} required/>
+            <input type="number" id="price" name="price" step="0.01" value={productUpdateDto.price} onChange={(e)=>{update(e)}}  required/>
             <label htmlFor="image">Image URL:</label>
-            <input type="text" id="image" name="image" value={productUpdateDto.image} onChange={(e)=>imageSetter(e.target.value)} required/>
+            <input type="text" id="image" name="image" value={productUpdateDto.image} onChange={(e)=>{update(e)}}  required/>
             <label htmlFor="description">Description:</label>
-            <textarea id="description" name="description" value={productUpdateDto.description} onChange={(e)=>descriptionSetter(e.target.value)} required></textarea>
+            <input type="text" id="description" name="description" value={productUpdateDto.description} onChange={(e)=>{update(e)}} required></input>
             <label htmlFor="category">Category:</label>
-            <input type="text" id="category" name="category" value={productUpdateDto.category} onChange={(e)=>categorySetter(e.target.value)} required/>
-            <input type="submit" value="Update Product" onClick={()=>updateHelper(productUpdateDto)}/>
+            <input type="text" id="category" name="category" value={productUpdateDto.category} onChange={(e)=>{update(e)}} required/>
+            <button  value="Update Product" onClick={()=>{updateProduct()}}> submit </button> 
 
-        </form>
+        </>
     )
 } 

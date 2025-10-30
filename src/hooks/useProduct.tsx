@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { Product } from "../components/HomePage";
 import axios from "axios";
 const defaultProduct:Product={
