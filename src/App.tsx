@@ -1,15 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Homepage from "./components/HomePage";
-import UpdateForm from "./components/UpdateForm";
-import PostForm from "./components/PostForm";
+import FormPage from "./components/FormPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/product/update/:id" element={<UpdateForm />} />
-        <Route path="/product/post" element={<PostForm />} />
+        <Route path="/product/update/:id" element={<FormPage />} />
+        <Route path="/product/post/" element={<FormPage />} />
         <Route path="/" element={<Homepage />} />
       </Routes>
     </BrowserRouter>
